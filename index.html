@@ -9,13 +9,6 @@
   <script src="./lib/knn.js"></script>
   <script type="text/javascript">
 
-    /*
-    This demo includes npg library (notpygamejs) that I wrote a while ago. It can
-    be found on my Github page (https://github.com/karpathy/notpygamejs). It's a 
-    quick and dirty canvas wrapper that has some helped functions I use often.
-    It's main use is to contain a main loop and expose methods update(), draw(), 
-    as well as some events keyUp(), mouseClick() etc.
-    */
 
 
     var N = 10; //number of data points
@@ -164,10 +157,10 @@
       $("#slider1").slider({
         orientation: "horizontal",
         slide: refreshC,
-        max: 2.0,
-        min: -2.0,
-        step: 0.1,
-        value: 0.0
+        max: 10,
+        min: 1,
+        step: 1,
+        value: 1
       });
 
       // for rbf kernel sigma
