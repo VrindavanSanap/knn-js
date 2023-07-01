@@ -11,7 +11,11 @@
   <script type="text/javascript">
 
 
+
+    var dist = "2"
+    var K = "1"
     var grid = tf.zeros([500, 500])
+
     var density = 4.0;
     var data
     var labels
@@ -62,10 +66,12 @@
     function draw() {
       ctx.clearRect(0, 0, WIDTH, HEIGHT);
       // draw decisions in the grid
+
       gridd = grid.arraySync()
       for (let x = 0.0; x <= WIDTH; x += density) {
         for (let y = 0.0; y <= HEIGHT; y += density) {
           if (gridd[x / density][y / density] > 0) ctx.fillStyle = `rgb(150,250,150)`;
+
           else ctx.fillStyle = 'rgb(250,150,150)';
           ctx.fillRect(x - density / 2 - 1, y - density - 1, density + 2, density + 2);
         }
@@ -94,9 +100,11 @@
 
 
       ctx.fillStyle = 'rgb(0,0,0)';
+
+      ctx.fillText(`K = ${K}`, 10, HEIGHT - 30);
+      ctx.fillText(`Using L${dist} distance`, 10, HEIGHT - 15);
+
       // ctx.fillText("Converged in " + 10 + " iterations.", 10, HEIGHT - 30);
-      ctx.fillText("K = 1", 10, HEIGHT - 30);
-      ctx.fillText("Using Manhatten distance", 10, HEIGHT - 15);
 
 
       // var numsupp = 0;
@@ -107,6 +115,7 @@
       // if (0 === 0) ctx.fillText("Using Linear kernel", 10, HEIGHT - 70);
 
       // ctx.fillText("C = " + "3", 10, HEIGHT - 90);
+
     }
 
     function mouseClick(x, y, shiftPressed) {
@@ -118,40 +127,24 @@
       retrain()
     }
 
-    function keyUp(key) {
 
-      if (key == 82) { // 'r'
-
-        // reset to original data and retrain
-        data = data.splice(0, 10);
-        labels = labels.splice(0, 10);
-        N = 10;
-        retrain();
-      }
-      if (key == 75) { // 'k'
-
-        // toggle between kernels: rbf or linear
-        kernelid = 1 - kernelid; // toggle 1 and 0
-        retrain();
-      }
-    }
     function keyDown(key) {
     }
 
 
     // UI stuff
     function refreshC(event, ui) {
-      const k = ui.value;
-      $("#creport").text("K = 1.0(Ability to change comming soon)");
+
+      K = ui.value;
+
+      $("#creport").text(`K = ${K}`);
+
     }
 
     function refreshSig(event, ui) {
-      var logSig = ui.value;
-      rbfKernelSigma = Math.pow(10, logSig);
-      $("#sigreport").text("RBF Kernel sigma = " + rbfKernelSigma.toPrecision(2));
-      if (kernelid == 1) {
+      dist = ui.value;
 
-      }
+      $("#sigreport").text(`L${dist} Distance`);
     }
 
     $(function () {
@@ -159,20 +152,20 @@
       $("#slider1").slider({
         orientation: "horizontal",
         slide: refreshC,
-        max: 2.0,
-        min: -2.0,
-        step: 0.1,
-        value: 0.0
+        max: 10,
+        min: 1,
+        step: 1,
+        value: 1
       });
 
       // for rbf kernel sigma
       $("#slider2").slider({
         orientation: "horizontal",
         slide: refreshSig,
-        max: 2.0,
-        min: -2.0,
-        step: 0.1,
-        value: 0.0
+        max: 10,
+        min: 1,
+        step: 1,
+        value: 1
       });
     });
   </script>
@@ -239,11 +232,11 @@
 
   <div id="optsdiv">
     <div style="width:230px; float: left; margin-left: 10px;">
-      <div id="slider1"></div><br /><span id="creport">K = 1.0 (Ability to change comming soon)</span>
+      <div id="slider1"></div><br /><span id="creport">K = 1</span>
     </div>
-    <!-- <div style="width:230px; float: right; margin-right: 10px;">
-      <div id="slider2"></div><br /><span id="sigreport">RBF Kernel sigma = 1.0</span>
-    </div> -->
+    <div style="width:230px; float: right; margin-right: 10px;">
+      <div id="slider2"></div><br /><span id="sigreport">L2 distance</span>
+    </div>
   </div>
 
 
