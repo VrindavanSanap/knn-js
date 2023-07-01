@@ -10,7 +10,8 @@
   <script type="text/javascript">
 
 
-
+    var dist = "2"
+    var K = "1"
     var N = 10; //number of data points
     var data = new Array(N);
     var labels = new Array(N);
@@ -92,17 +93,8 @@
 
 
       ctx.fillStyle = 'rgb(0,0,0)';
-      // ctx.fillText("Converged in " + 10 + " iterations.", 10, HEIGHT - 30);
-      ctx.fillText("K = 1", 10, HEIGHT - 30);
-      ctx.fillText("Using L2 distance", 10, HEIGHT - 15);
-      // var numsupp = 0;
-      // for (var i = 0; i < N; i++) { if (2 > 1e-5) numsupp++; }
-      // ctx.fillText("Number of support vectors: " + numsupp + " / " + N, 10, HEIGHT - 50);
-
-      // if (3 === 1) ctx.fillText("Using Rbf kernel with sigma = " + rbfKernelSigma.toPrecision(2), 10, HEIGHT - 70);
-      // if (0 === 0) ctx.fillText("Using Linear kernel", 10, HEIGHT - 70);
-
-      // ctx.fillText("C = " + "3", 10, HEIGHT - 90);
+      ctx.fillText(`K = ${K}`, 10, HEIGHT - 30);
+      ctx.fillText(`Using L${dist} distance`, 10, HEIGHT - 15);
     }
 
     function mouseClick(x, y, shiftPressed) {
@@ -114,42 +106,23 @@
       retrain()
     }
 
-    function keyUp(key) {
 
-      if (key == 82) { // 'r'
-
-        // reset to original data and retrain
-        data = data.splice(0, 10);
-        labels = labels.splice(0, 10);
-        N = 10;
-        retrain();
-      }
-      if (key == 75) { // 'k'
-
-        // toggle between kernels: rbf or linear
-        kernelid = 1 - kernelid; // toggle 1 and 0
-        retrain();
-      }
-    }
     function keyDown(key) {
     }
 
 
     // UI stuff
     function refreshC(event, ui) {
-      const k = ui.value;
+      K = ui.value;
 
-      $("#creport").text("K = 1.0(Ability to change comming soon)");
+      $("#creport").text(`K = ${K}`);
 
     }
 
     function refreshSig(event, ui) {
-      var logSig = ui.value;
-      rbfKernelSigma = Math.pow(10, logSig);
-      $("#sigreport").text("RBF Kernel sigma = " + rbfKernelSigma.toPrecision(2));
-      if (kernelid == 1) {
+      dist = ui.value;
 
-      }
+      $("#sigreport").text(`L${dist} Distance`);
     }
 
     $(function () {
@@ -167,10 +140,10 @@
       $("#slider2").slider({
         orientation: "horizontal",
         slide: refreshSig,
-        max: 2.0,
-        min: -2.0,
-        step: 0.1,
-        value: 0.0
+        max: 10,
+        min: 1,
+        step: 1,
+        value: 1
       });
     });
   </script>
@@ -237,11 +210,11 @@
 
   <div id="optsdiv">
     <div style="width:230px; float: left; margin-left: 10px;">
-      <div id="slider1"></div><br /><span id="creport">K = 1.0 (Ability to change comming soon)</span>
+      <div id="slider1"></div><br /><span id="creport">K = 1</span>
     </div>
-    <!-- <div style="width:230px; float: right; margin-right: 10px;">
-      <div id="slider2"></div><br /><span id="sigreport">RBF Kernel sigma = 1.0</span>
-    </div> -->
+    <div style="width:230px; float: right; margin-right: 10px;">
+      <div id="slider2"></div><br /><span id="sigreport">L2 distance</span>
+    </div>
   </div>
 
 
