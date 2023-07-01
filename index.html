@@ -5,65 +5,78 @@
   <link type="text/css" href="./demo/jqueryui/css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />
   <script type="text/javascript" src="./demo/jqueryui/js/jquery-1.7.2.min.js"></script>
   <script type="text/javascript" src="./demo/jqueryui/js/jquery-ui-1.8.21.custom.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
   <script src="./demo/npg_include/npgmain.js"></script>
   <script src="./lib/knn.js"></script>
   <script type="text/javascript">
 
 
+
     var dist = "2"
     var K = "1"
-    var N = 10; //number of data points
-    var data = new Array(N);
-    var labels = new Array(N);
-    const ss = 50
-    var density = 4.0;
-    knn = new knnjs.KNN()
-    function myinit() {
+    var grid = tf.zeros([500, 500])
 
-      data[0] = [-0.4326, 1.1909];
-      data[1] = [3.0, 4.0];
-      data[2] = [0.1253, -0.0376];
-      data[3] = [0.2877, 0.3273];
-      data[4] = [-1.1465, 0.1746];
-      data[5] = [1.8133, 2.1139];
-      data[6] = [2.7258, 3.0668];
-      data[7] = [1.4117, 2.0593];
-      data[8] = [4.1832, 1.9044];
-      data[9] = [1.8636, 1.1677];
-      labels[0] = 1;
-      labels[1] = 1;
-      labels[2] = 1;
-      labels[3] = 1;
-      labels[4] = 1;
-      labels[5] = -1;
-      labels[6] = -1;
-      labels[7] = -1;
-      labels[8] = -1;
-      labels[9] = -1;
-      grid = knn.train(data, labels, 1, "L1", ss, (WIDTH / density) + 1)
-      console.log(grid)
+    var density = 4.0;
+    var data
+    var labels
+    var knn = new knnjs.KNN()
+    function myinit() {
+      data = tf.tensor2d([
+        [21, 300],
+        [30, 40],
+        [153, 376],
+        [277, 173],
+        [165, 17],
+        [133, 211],
+        [258, 368],
+        [117, 293],
+        [432, 144],
+        [136, 177]]);
+      labels = tf.tensor2d([[1],
+      [1],
+      [1],
+      [1],
+      [1],
+      [-1],
+      [-1],
+      [-1],
+      [-1],
+      [-1]]);
+
+      retrain()
     }
     function retrain() {
-      grid = knn.train(data, labels, 1, "L1", ss, (WIDTH / density) + 1)
-    }
+      let grid_coords = []
+      for (let x = 0.0; x <= WIDTH; x += density) {
 
+        let temp = []
+        for (let y = 0.0; y <= WIDTH; y += density) {
+          temp.push([x, y])
+        }
+        grid_coords.push(temp)
+      }
+      let mat1 = tf.tensor3d(grid_coords)
+      console.log(mat1.arraySync())
+      var grid = knn.train(data, labels)
+    }
 
     function update() {
     }
 
     function draw() {
-
-
       ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
       // draw decisions in the grid
+
+      gridd = grid.arraySync()
       for (let x = 0.0; x <= WIDTH; x += density) {
         for (let y = 0.0; y <= HEIGHT; y += density) {
-          if (grid[x / density][y / density] > 0) ctx.fillStyle = `rgb(150,250,150)`;
+          if (gridd[x / density][y / density] > 0) ctx.fillStyle = `rgb(150,250,150)`;
+
           else ctx.fillStyle = 'rgb(250,150,150)';
           ctx.fillRect(x - density / 2 - 1, y - density - 1, density + 2, density + 2);
         }
       }
+
 
       // draw axes
       ctx.beginPath();
@@ -75,26 +88,42 @@
       ctx.lineTo(WIDTH / 2, HEIGHT);
       ctx.stroke();
       ctx.strokeStyle = 'rgb(0,0,0)';
-      for (var i = 0; i < N; i++) {
-        if (labels[i] == 1) ctx.fillStyle = 'rgb(100,200,100)';
+
+      for (var i = 0; i < data.shape[0]; i++) {
+        if (labels.arraySync()[i][0] == 1) ctx.fillStyle = 'rgb(100,200,100)';
         else ctx.fillStyle = 'rgb(200,100,100)';
         ctx.lineWidth = 2;
-        drawCircle(data[i][0] * ss + WIDTH / 2, data[i][1] * ss + HEIGHT / 2, 6);
+
+        drawCircle(data.arraySync()[i][0], data.arraySync()[i][1], 5);
       }
 
 
 
       ctx.fillStyle = 'rgb(0,0,0)';
+
       ctx.fillText(`K = ${K}`, 10, HEIGHT - 30);
       ctx.fillText(`Using L${dist} distance`, 10, HEIGHT - 15);
+
+      // ctx.fillText("Converged in " + 10 + " iterations.", 10, HEIGHT - 30);
+
+
+      // var numsupp = 0;
+      // for (var i = 0; i < N; i++) { if (2 > 1e-5) numsupp++; }
+      // ctx.fillText("Number of support vectors: " + numsupp + " / " + N, 10, HEIGHT - 50);
+
+      // if (3 === 1) ctx.fillText("Using Rbf kernel with sigma = " + rbfKernelSigma.toPrecision(2), 10, HEIGHT - 70);
+      // if (0 === 0) ctx.fillText("Using Linear kernel", 10, HEIGHT - 70);
+
+      // ctx.fillText("C = " + "3", 10, HEIGHT - 90);
+
     }
 
     function mouseClick(x, y, shiftPressed) {
 
       // add datapoint at location of click
-      data[N] = [(x - WIDTH / 2) / ss, (y - HEIGHT / 2) / ss];
-      labels[N] = shiftPressed ? 1 : -1;
-      N += 1;
+      data = data.concat(tf.tensor2d([[x, y]]))
+      const new_label = shiftPressed ? 1 : -1;
+      labels = labels.concat(tf.tensor2d([[new_label]]))
       retrain()
     }
 
@@ -105,6 +134,7 @@
 
     // UI stuff
     function refreshC(event, ui) {
+
       K = ui.value;
 
       $("#creport").text(`K = ${K}`);
@@ -180,7 +210,7 @@
 
 </head>
 
-<body onLoad="NPGinit(3);">
+<body onLoad="NPGinit(0.5);">
   <div id="dec">
     <br />
     <h1>K Nearest Neighbors in Javascript</h1>
