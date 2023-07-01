@@ -10,19 +10,8 @@
   <script src="./lib/knn.js"></script>
   <script type="text/javascript">
 
-    /*
-    This demo includes npg library (notpygamejs) that I wrote a while ago. It can
-    be found on my Github page (https://github.com/karpathy/notpygamejs). It's a 
-    quick and dirty canvas wrapper that has some helped functions I use often.
-    It's main use is to contain a main loop and expose methods update(), draw(), 
-    as well as some events keyUp(), mouseClick() etc.
-    */
 
-
-    var N = 10;
     var grid = tf.zeros([500, 500])
-    var labels = new Array(N);
-    const ss = 50
     var density = 4.0;
     var data
     var labels
@@ -49,7 +38,6 @@
       [-1],
       [-1],
       [-1]]);
-
 
       retrain()
     }
