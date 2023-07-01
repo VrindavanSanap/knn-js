@@ -20,13 +20,13 @@
 
 
     var N = 10;
-
+    var grid = tf.zeros([500, 500])
     var labels = new Array(N);
     const ss = 50
     var density = 4.0;
     var data
     var labels
-    knn = new knnjs.KNN()
+    var knn = new knnjs.KNN()
     function myinit() {
       data = tf.tensor2d([
         [21, 300],
@@ -50,11 +50,22 @@
       [-1],
       [-1]]);
 
+
       retrain()
     }
     function retrain() {
-      grid = knn.train(data, labels1)
-      console.log(data.shape)
+      let grid_coords = []
+      for (let x = 0.0; x <= WIDTH; x += density) {
+
+        let temp = []
+        for (let y = 0.0; y <= WIDTH; y += density) {
+          temp.push([x, y])
+        }
+        grid_coords.push(temp)
+      }
+      let mat1 = tf.tensor3d(grid_coords)
+      console.log(mat1.arraySync())
+      var grid = knn.train(data, labels)
     }
 
     function update() {
@@ -63,13 +74,15 @@
     function draw() {
       ctx.clearRect(0, 0, WIDTH, HEIGHT);
       // draw decisions in the grid
+      gridd = grid.arraySync()
       for (let x = 0.0; x <= WIDTH; x += density) {
         for (let y = 0.0; y <= HEIGHT; y += density) {
-          if (grid[x / density][y / density] > 0) ctx.fillStyle = `rgb(150,250,150)`;
+          if (gridd[x / density][y / density] > 0) ctx.fillStyle = `rgb(150,250,150)`;
           else ctx.fillStyle = 'rgb(250,150,150)';
           ctx.fillRect(x - density / 2 - 1, y - density - 1, density + 2, density + 2);
         }
       }
+
 
       // draw axes
       ctx.beginPath();
@@ -216,7 +229,7 @@
 
 </head>
 
-<body onLoad="NPGinit(3);">
+<body onLoad="NPGinit(0.5);">
   <div id="dec">
     <br />
     <h1>K Nearest Neighbors in Javascript</h1>
