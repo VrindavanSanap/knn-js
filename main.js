@@ -1,6 +1,6 @@
 
-var dist = 2
-var K = "1"
+var dist = 1
+var K = 1
 var N = 10; //number of data points
 var data = new Array(N);
 var labels = new Array(N);
