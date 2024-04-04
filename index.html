@@ -8,7 +8,7 @@
   <script type="text/javascript" src="./demo/jqueryui/js/jquery-ui-1.8.21.custom.min.js"></script>
   <script src="./demo/npg_include/npgmain.js"></script>
   <script src="./lib/knn.js"></script>
-
+  <script src="./main.js"></script>
 </head>
 
 <body onLoad="NPGinit(3);">
@@ -17,24 +17,31 @@
     <h1>K Nearest Neighbors in Javascript</h1>
     <p>
       Heavily inspired by svmjs by Andrej Karpathy <a href="https://github.com/karpathy/svmjs">Github</a> <br />
+      <!-- Find me on Twitter <a href="https://twitter.com/karpathy">@karpathy</a> -->
     </p>
   </div>
 
   <p>
     <b>mouse click</b>: add red data point<br />
     <b>shift + mouse click</b>: add green data point<br />
+    <b>'k'</b>: toggle between Linear and Rbf kernel<br />
     <b>'r'</b>: reset<br />
   </p>
 
   <canvas id="NPGcanvas" width="500" height="500">Browser not supported for Canvas. Get a real
     browser.</canvas><br /><br />
 
+
   <div id="optsdiv">
-    <div style="width:230px; float: left; margin-left: 10px;">
-      <div id="slider1"></div><br /><span id="creport">K = 1</span>
+    <div>
+      <div id="slider1"></div>
+      <br />
+      <span id="k_span">K = 1</span>
     </div>
-    <div style="width:230px; float: right; margin-right: 10px;">
-      <div id="slider2"></div><br /><span id="sigreport">L2 distance</span>
+    <div>
+      <div id="slider2"></div>
+      <br />
+      <span id="dist_span">L2 distance</span>
     </div>
   </div>
 

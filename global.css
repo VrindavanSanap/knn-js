@@ -33,3 +33,19 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+
+
+    #optsdiv > div {
+      width: 230px;
+    }
+
+    #optsdiv > div:nth-child(1) {
+      float: left;
+      margin-left: 10px;
+    }
+
+    #optsdiv > div:nth-child(2) {
+      float: right;
+      margin-right: 10px;
+    }

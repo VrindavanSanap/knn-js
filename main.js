@@ -9,7 +9,7 @@ var density = 4.0;
 knn = new knnjs.KNN()
 function myinit() {
 
-    data[0] = [-0.4326, 1.1909];
+    data[0] = [5, 1.1909];
     data[1] = [3.0, 4.0];
     data[2] = [0.1253, -0.0376];
     data[3] = [0.2877, 0.3273];
@@ -30,7 +30,7 @@ function myinit() {
     labels[8] = -1;
     labels[9] = -1;
     grid = knn.train(data, labels, 1, "L1", ss, (WIDTH / density) + 1)
-    console.log(grid)
+
 }
 function retrain() {
     grid = knn.train(data, labels, 1, "L1", ss, (WIDTH / density) + 1)
@@ -41,32 +41,43 @@ function update() {
 }
 
 function draw() {
-
+    const GREEN = `rgb(150,250,150)`;
+    const RED = 'rgb(250,150,150)'
+    const GREY = 'rgb(50,50,50)'
+    const BLACK = 'rgb(0,0,0)'
 
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
-    // draw decisions in the grid
     for (let x = 0.0; x <= WIDTH; x += density) {
         for (let y = 0.0; y <= HEIGHT; y += density) {
-            if (grid[x / density][y / density] > 0) ctx.fillStyle = `rgb(150,250,150)`;
-            else ctx.fillStyle = 'rgb(250,150,150)';
+            if (grid[x / density][y / density] > 0) {
+                ctx.fillStyle = GREEN;
+            } else {
+                ctx.fillStyle = RED;
+            }
             ctx.fillRect(x - density / 2 - 1, y - density - 1, density + 2, density + 2);
         }
     }
 
     // draw axes
     ctx.beginPath();
-    ctx.strokeStyle = 'rgb(50,50,50)';
+    ctx.strokeStyle = GREY;
     ctx.lineWidth = 1;
     ctx.moveTo(0, HEIGHT / 2);
     ctx.lineTo(WIDTH, HEIGHT / 2);
     ctx.moveTo(WIDTH / 2, 0);
     ctx.lineTo(WIDTH / 2, HEIGHT);
     ctx.stroke();
-    ctx.strokeStyle = 'rgb(0,0,0)';
+
+    // draw data points
+    const DATA_GREEN = 'rgb(100,200,100)'
+    const DATA_RED = 'rgb(200,100,100)'
+    ctx.strokeStyle = BLACK;
     for (var i = 0; i < N; i++) {
-        if (labels[i] == 1) ctx.fillStyle = 'rgb(100,200,100)';
-        else ctx.fillStyle = 'rgb(200,100,100)';
+        if (labels[i] == 1) {
+            ctx.fillStyle = DATA_GREEN;
+        } else {
+            ctx.fillStyle = DATA_RED;
+        }
         ctx.lineWidth = 2;
         drawCircle(data[i][0] * ss + WIDTH / 2, data[i][1] * ss + HEIGHT / 2, 6);
     }
@@ -90,20 +101,21 @@ function mouseClick(x, y, shiftPressed) {
 
 function keyDown(key) {
 }
+function keyUp(key) {
+}
+
 
 
 // UI stuff
 function refreshC(event, ui) {
     K = ui.value;
-
-    $("#creport").text(`K = ${K}`);
+    $("#k_span").text(`K = ${K}`);
 
 }
 
 function refreshSig(event, ui) {
     dist = ui.value;
-
-    $("#sigreport").text(`L${dist} Distance`);
+    $("#dist_span").text(`L${dist} Distance`);
 }
 
 $(function () {
