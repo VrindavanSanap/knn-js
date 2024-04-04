@@ -1,5 +1,5 @@
 
-var dist = "2"
+var dist = 2
 var K = "1"
 var N = 10; //number of data points
 var data = new Array(N);
@@ -29,11 +29,11 @@ function myinit() {
     labels[7] = -1;
     labels[8] = -1;
     labels[9] = -1;
-    grid = knn.train(data, labels, 1, "L1", ss, (WIDTH / density) + 1)
+    grid = knn.train(data, labels, 1, dist, ss, (WIDTH / density) + 1)
 
 }
 function retrain() {
-    grid = knn.train(data, labels, 1, "L1", ss, (WIDTH / density) + 1)
+    grid = knn.train(data, labels, 1, dist, ss, (WIDTH / density) + 1)
 }
 
 
@@ -107,33 +107,34 @@ function keyUp(key) {
 
 
 // UI stuff
-function refreshC(event, ui) {
-    K = ui.value;
+function refreshK(event, ui) {
+    console.log(ui.value)
     $("#k_span").text(`K = ${K}`);
 
 }
 
-function refreshSig(event, ui) {
-    dist = ui.value;
+function refreshL(event, ui) {
+    dist = parseInt(ui.value)
+    retrain()
     $("#dist_span").text(`L${dist} Distance`);
 }
 
 $(function () {
-    // for C parameter
+    // for K parameter
     $("#slider1").slider({
         orientation: "horizontal",
-        slide: refreshC,
-        max: 10,
+        slide: refreshK,
+        max: 1,
         min: 1,
         step: 1,
         value: 1
     });
 
-    // for rbf kernel sigma
+    // for L parameter
     $("#slider2").slider({
         orientation: "horizontal",
-        slide: refreshSig,
-        max: 10,
+        slide: refreshL,
+        max: 2,
         min: 1,
         step: 1,
         value: 1
