@@ -92,7 +92,7 @@ function draw() {
 function mouseClick(x, y, shiftPressed) {
 
     // add datapoint at location of click
-    data[N] = [(x - WIDTH / 2) / ss, (y - HEIGHT / 2) / ss];
+    data[N] = [x,y];
     labels[N] = shiftPressed ? 1 : -1;
     N += 1;
     retrain()
